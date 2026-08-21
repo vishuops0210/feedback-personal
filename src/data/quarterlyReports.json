@@ -1,0 +1,152 @@
+{
+  "Q1": {
+    "period": "June, July & August 2026",
+    "sections": [
+      {
+        "id": "01",
+        "title": "Outline (Documentation Tool)",
+        "badge": "Done",
+        "type": "bullets",
+        "bullets": [
+          { "type": "text", "text": "Conducted a POC of {Outline} (documentation tool) on AWS." },
+          { "type": "text", "text": "Migrated the documentation platform from Docker-based deployment to Kubernetes on {LDC}." }
+        ]
+      },
+      {
+        "id": "02",
+        "title": "Montra (Client)",
+        "badge": "Done",
+        "type": "bullets",
+        "bullets": [
+          { "type": "text", "text": "Created a POC for {Liquibase} for OT-Montra." },
+          { "type": "text", "text": "Created POCs for setting up {ArgoCD} with both Ingress and non-Ingress configurations." },
+          { "type": "text", "text": "Set up {ArgoCD} directly on the OT-Montra cluster." },
+          {
+            "type": "group",
+            "main": "Created and optimized the ArgoCD deployment structure:",
+            "items": [
+              "Created deployment files for Values, Parent, Projects, and Applications.",
+              "Initially had 30+ configuration files for application deployments.",
+              "Reduced them to 3 files using {ApplicationSet}.",
+              "Further optimized the structure to **1 configuration file** applicable across all environments: {Dev}, {UAT}, and {Prod}."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "03",
+        "title": "CI/CD Accelerator",
+        "badge": "In-progress ( cd part assigned to asma )",
+        "type": "subsections",
+        "subSections": [
+          {
+            "title": "CI Pipeline",
+            "bullets": [
+              {
+                "type": "group",
+                "main": "Created the OT-Central CI DevSecOps pipeline with full DevSecOps implementation for 7 application types:",
+                "items": ["Python", "React", "Node.js", "Next.js", "Drupal", "Lambda Functions", ".NET 4.7"]
+              },
+              { "type": "text", "text": "Created the CD action process for hosting Lambda functions on AWS." },
+              {
+                "type": "link",
+                "text": "Created documentation for data gathering through GitHub CLI and designed the dashboard data flow, including Data Architecture, Data Dictionary, Data Structure, and Scalability considerations.",
+                "linkText": "GitHub CLI & Dashboard Data Flow Doc",
+                "linkUrl": "https://docs.opstree.dev/doc/github-G6Q7shnNly"
+              }
+            ]
+          },
+          {
+            "title": "CD Pipeline",
+            "bullets": [
+              { "type": "text", "text": "ASMA is currently working on the CD portion. Currently just reviewing the implementation and providing feedback where required." }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "04",
+        "title": "Client Documentation",
+        "badge": "RGI & Audit matrix ( Done )",
+        "type": "bullets",
+        "bullets": [
+          {
+            "type": "group",
+            "main": "Created two documents based on the RGI client requirements:",
+            "items": [
+              "**GitHub Enterprise vs. Azure DevOps** — comparison and recommendation on which solution to choose.",
+              "**Enterprise DevSecOps Solution** — solution approach using GitHub Enterprise and Azure DevOps."
+            ]
+          },
+          { "type": "text", "text": "Created an Azure auditing checklist aligned with Ayan Sir." }
+        ]
+      },
+      {
+        "id": "05",
+        "title": "LiteLLM",
+        "badge": "EKS POC is in progress",
+        "type": "bullets",
+        "bullets": [
+          { "type": "text", "text": "Created a Docker-based deployment POC for {LiteLLM} with the required tools and integrations." },
+          { "type": "text", "text": "Created the architecture diagram, component flow, and mappings for better understanding." },
+          { "type": "text", "text": "Optimized the deployment process, reducing Docker-based setup time to approximately **10 minutes**." },
+          { "type": "text", "text": "Deployed LiteLLM on {LDC}." },
+          { "type": "text", "text": "Created documentation explaining {Envoy Proxy} and {Envoy Gateway}, including their purpose and how they interconnect." },
+          { "type": "text", "text": "Currently working on cloud deployments for clients." }
+        ]
+      },
+      {
+        "id": "06",
+        "title": "Backstage",
+        "badge": "pause",
+        "type": "bullets",
+        "bullets": [
+          {
+            "type": "group",
+            "main": "Created custom templates for:",
+            "items": ["Python", "REMS"]
+          },
+          { "type": "text", "text": "Created the DevSecOps pipeline in GitLab." },
+          { "type": "text", "text": "Integrated GitHub and GitLab with {Backstage}." }
+        ]
+      },
+      {
+        "id": "07",
+        "title": "Interviews & Hiring",
+        "badge": "5 Calls & 2 Reviews",
+        "type": "bullets",
+        "bullets": [
+          { "type": "text", "text": "Conducted **5 technical candidate interviews** for hiring pipelines." },
+          { "type": "text", "text": "Evaluated **2 candidate assignment tests** and provided detailed feedback reviews." }
+        ]
+      },
+      {
+        "id": "08",
+        "title": "Key Learnings",
+        "badge": "15 Domains",
+        "type": "learnings",
+        "intro": "Through these tasks, gained hands-on exposure and a deeper understanding of:",
+        "items": [
+          "Azure AD ( SSO )",
+          "BuildPiper Deployment",
+          "Helm",
+          "ArgoCD",
+          "SonarQube",
+          "GitHub Composite Actions",
+          "GKE",
+          "GKE Ingress Internal Working",
+          "Gateway API",
+          "DevSecOps",
+          "Kubernetes Architecture and Deployment",
+          "Cloud-Native Architecture",
+          "CI/CD Architecture and Automation",
+          "Enterprise DevOps and DevSecOps Practices",
+          "Cloud Infrastructure and Application Deployment"
+        ]
+      }
+    ]
+  },
+  "Q2": { "period": "September, October & November 2026", "sections": [] },
+  "Q3": { "period": "December 2026, January & February 2027", "sections": [] },
+  "Q4": { "period": "March, April & May 2027", "sections": [] }
+}

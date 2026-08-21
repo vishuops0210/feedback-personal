@@ -1,0 +1,36 @@
+{
+  "headerTitle": "Reviewer Feedback & Evaluation",
+  "description": "Thanks for reviewing my performance report! Feel free to leave your evaluation or feedback below (all fields are completely optional).",
+  "sectionTitle": "PERFORMANCE EVALUATION (OPTIONAL)",
+  "quarterLabel": "Target Quarter (Required)",
+  "quarterOptions": [
+    { "value": "Q1", "label": "Q1 (June, July & August)" },
+    { "value": "Q2", "label": "Q2 (September, October & November)" },
+    { "value": "Q3", "label": "Q3 (December, January & February)" },
+    { "value": "Q4", "label": "Q4 (March, April & May)" }
+  ],
+  "nameLabel": "Your Name (Optional)",
+  "namePlaceholder": "Enter your name (Optional)...",
+  "commentsPlaceholder": "Additional feedback, notes, or suggestions (Optional)...",
+  "submitButtonText": "Send Feedback",
+  "submittingText": "Sending...",
+  "successMessage": "",
+  "footerNote": "**Note:** This report focuses on major outcomes and completed deliverables. Daily troubleshooting, brainstorming sessions, and internal discussion notes are omitted here.",
+  "emojiMoods": [
+    { "value": 1, "emoji": "😭" },
+    { "value": 2, "emoji": "🥺" },
+    { "value": 3, "emoji": "🙂" },
+    { "value": 4, "emoji": "😊" },
+    { "value": 5, "emoji": "🌸" }
+  ],
+  "ratingCriteria": [
+    { "key": "technicalExecution", "label": "Technical Execution" },
+    { "key": "qualityOfWork", "label": "Quality of Work" },
+    { "key": "problemSolving", "label": "Problem Solving" },
+    { "key": "learningAgility", "label": "Learning & Agility" },
+    { "key": "ownership", "label": "Ownership & Accountability" },
+    { "key": "communication", "label": "Communication" },
+    { "key": "documentation", "label": "Documentation" },
+    { "key": "productivity", "label": "Productivity & Speed" }
+  ]
+}

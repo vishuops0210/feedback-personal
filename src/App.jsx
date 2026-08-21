@@ -133,10 +133,26 @@ export default function App() {
   };
 
   const handleRatingClick = (key, val) => {
-    setRatings(prev => ({
-      ...prev,
-      [key]: prev[key] === val ? 0 : val // Toggle emoji rating
-    }));
+    setRatings(prev => {
+      const current = prev[key] || 0;
+      const halfVal = val - 0.5;
+      if (current === val) {
+        return { ...prev, [key]: halfVal };
+      } else if (current === halfVal) {
+        return { ...prev, [key]: 0 };
+      } else {
+        return { ...prev, [key]: val };
+      }
+    });
+  };
+
+  const getEmojiForScore = (val) => {
+    if (!val || val === 0) return '😶';
+    if (val <= 1.5) return '😭';
+    if (val <= 2.5) return '🥺';
+    if (val <= 3.5) return '🙂';
+    if (val <= 4.5) return '😊';
+    return '🌸';
   };
 
   // Check which formatting states (B, I, U, etc.) are active at the current cursor position
@@ -264,9 +280,11 @@ export default function App() {
     setIsSubmitting(true);
 
     const getMoodLabel = (val) => {
-      const match = (feedbackFormConfig.emojiMoods || []).find(m => m.value === val);
-      if (!match) return 'Not Rated';
-      return match.label ? `${match.emoji} ${match.label}` : match.emoji;
+      if (!val) return 'Not Rated';
+      const baseVal = Math.ceil(val);
+      const match = (feedbackFormConfig.emojiMoods || []).find(m => m.value === baseVal);
+      const emoji = match ? match.emoji : '⭐';
+      return `${emoji} ${val} / 5.0`;
     };
 
     const ratingsSummary = (feedbackFormConfig.ratingCriteria || [])
@@ -845,37 +863,6 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* Animated Emoji Rating Criteria Grid */}
-                <div className="rating-section-title">
-                  {feedbackFormConfig.sectionTitle || "PERFORMANCE EVALUATION (OPTIONAL)"}
-                </div>
-                <div className="ratings-grid">
-                  {/* Strict 6-Column Header Row for 1 2 3 4 5 */}
-                  <div className="ratings-table-header">
-                    <span className="col-header-label">Criteria</span>
-                    {(feedbackFormConfig.emojiMoods || []).map(m => (
-                      <span key={m.value} className="score-num">{m.value}</span>
-                    ))}
-                  </div>
-
-                  {(feedbackFormConfig.ratingCriteria || []).map(item => (
-                    <div key={item.key} className="rating-row">
-                      <span className="rating-label">{item.label}</span>
-                      {(feedbackFormConfig.emojiMoods || []).map(mood => (
-                        <button
-                          key={mood.value}
-                          type="button"
-                          className={`emoji-rating-btn ${ratings[item.key] === mood.value ? 'active' : ''}`}
-                          onClick={() => handleRatingClick(item.key, mood.value)}
-                          title={mood.label || `Score ${mood.value}`}
-                        >
-                          {mood.emoji}
-                        </button>
-                      ))}
-                    </div>
-                  ))}
-                </div>
-
                 {/* Optional Reviewer Name Field */}
                 <div style={{ marginBottom: 14 }}>
                   <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: 'var(--accent-primary)', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
@@ -895,7 +882,7 @@ export default function App() {
                 </div>
 
                 {/* Professional True WYSIWYG ContentEditable Rich Text Feedback Box */}
-                <div className={`feedback-textarea-container ${isEditorExpanded ? 'is-expanded' : ''}`}>
+                <div className={`feedback-textarea-container ${isEditorExpanded ? 'is-expanded' : ''}`} style={{ marginBottom: 18 }}>
                   <div
                     ref={editorRef}
                     contentEditable
@@ -966,6 +953,65 @@ export default function App() {
                       </button>
                     </div>
                   </div>
+                </div>
+
+                {/* Performance Evaluation Rating Sliders at the bottom */}
+                <div className="rating-section-title">
+                  {feedbackFormConfig.sectionTitle || "PERFORMANCE EVALUATION (OPTIONAL)"}
+                </div>
+                <div className="ratings-sliders-container">
+                  {(feedbackFormConfig.ratingCriteria || []).map(item => {
+                    const currentVal = ratings[item.key] || 0;
+                    return (
+                      <div key={item.key} className="rating-slider-card">
+                        <div className="rating-slider-header">
+                          <span className="rating-label">{item.label}</span>
+                          <span className={`rating-score-pill ${currentVal > 0 ? 'active' : ''}`}>
+                            <span className="score-emoji">{getEmojiForScore(currentVal)}</span>
+                            <span className="score-text">{currentVal > 0 ? `${currentVal} / 5.0` : 'Not Rated'}</span>
+                          </span>
+                        </div>
+                        <div className="slider-input-wrapper">
+                          <div className="slider-track-container">
+                            <input
+                              type="range"
+                              min="1"
+                              max="5"
+                              step="0.5"
+                              value={currentVal || 3}
+                              onChange={(e) => {
+                                const val = parseFloat(e.target.value);
+                                setRatings(prev => ({ ...prev, [item.key]: val }));
+                              }}
+                              className="rating-range-slider"
+                            />
+                            <div className="slider-pipe-ticks">
+                              {[1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5].map(step => (
+                                <span
+                                  key={step}
+                                  className={`pipe-tick ${step % 1 === 0 ? 'major' : 'minor'} ${currentVal === step ? 'active' : ''}`}
+                                  style={{ left: `${((step - 1) / 4) * 100}%` }}
+                                  onClick={() => setRatings(prev => ({ ...prev, [item.key]: step }))}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                          <div className="slider-ticks-labels">
+                            {[1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5].map(step => (
+                              <span
+                                key={step}
+                                className={`tick-label-item ${step % 1 === 0 ? 'major-label' : 'minor-label'} ${currentVal === step ? 'selected' : ''}`}
+                                style={{ left: `${((step - 1) / 4) * 100}%` }}
+                                onClick={() => setRatings(prev => ({ ...prev, [item.key]: step }))}
+                              >
+                                {step % 1 === 0 ? `${step}.0` : step}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
 
                 <div className="feedback-actions">

@@ -774,13 +774,25 @@ export default function App() {
           </div>
         )}
 
-        {/* Executive Note Footer */}
-        <footer className="footer-note">
-          <p>
-            {renderFormattedText(feedbackFormConfig.footerNote || "**Note:** This report focuses on major outcomes and completed deliverables. Daily troubleshooting, brainstorming sessions, and internal discussion notes are omitted here.")}
-          </p>
-        </footer>
       </div>
+
+      {/* Executive Page Footer — Spans Full 100% Screen Width */}
+      <footer className={`app-footer ${isHeaderCollapsed ? 'is-collapsed' : ''}`}>
+        <div className="footer-content">
+          <div className="footer-note-card">
+            <span className="footer-note-icon">📌</span>
+            <div className="footer-note-text">
+              {renderFormattedText(feedbackFormConfig.footerNote || "**Note:** This report focuses on major outcomes and completed deliverables. Daily troubleshooting, brainstorming sessions, and internal discussion notes are omitted here.")}
+            </div>
+          </div>
+          
+          <div className="footer-bottom-bar">
+            <div className="footer-copyright">
+              Executive Performance Report • Presented by <strong>Vishal Tyagi</strong>
+            </div>
+          </div>
+        </div>
+      </footer>
 
       {/* Reviewer Feedback Modal */}
       {feedbackModalOpen && (

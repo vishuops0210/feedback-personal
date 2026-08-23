@@ -149,16 +149,6 @@ export default function App() {
     });
   };
 
-  const handleStarTouchMove = (e, key) => {
-    dismissKeyboard();
-    const container = e.currentTarget;
-    const rect = container.getBoundingClientRect();
-    const clientX = e.touches && e.touches.length > 0 ? e.touches[0].clientX : e.clientX;
-    const offsetX = clientX - rect.left;
-    const percentage = Math.max(0, Math.min(1, offsetX / rect.width));
-    const val = Math.max(0.5, Math.min(5.0, Math.round(percentage * 5 * 2) / 2));
-    setRatings(prev => ({ ...prev, [key]: val }));
-  };
 
   const dismissKeyboard = () => {
     if (document.activeElement && typeof document.activeElement.blur === 'function') {
@@ -977,14 +967,9 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* 5-Star Compact Rating Rows with Slide & Touch Support */}
-                <div className="rating-section-header">
-                  <span className="rating-section-title">
-                    {feedbackFormConfig.sectionTitle || "PERFORMANCE EVALUATION (OPTIONAL)"}
-                  </span>
-                  <span className="rating-hint-text">
-                    ✨ Tap or slide to fill stars
-                  </span>
+                {/* 5-Star Compact Rating Rows */}
+                <div className="rating-section-title">
+                  {feedbackFormConfig.sectionTitle || "PERFORMANCE EVALUATION (OPTIONAL)"}
                 </div>
                 <div className="ratings-compact-list">
                   {(feedbackFormConfig.ratingCriteria || []).map(item => {
@@ -994,13 +979,11 @@ export default function App() {
                         <div className="rating-row-info">
                           <span className="rating-label">{item.label}</span>
                           <span className={`rating-row-score ${currentVal > 0 ? 'active' : ''}`}>
-                            {currentVal > 0 ? `${currentVal} / 5.0` : 'Not Rated'}
+                            {currentVal > 0 ? `${getEmojiForScore(currentVal)} ${currentVal} / 5.0` : 'Not Rated'}
                           </span>
                         </div>
                         <div
                           className="rating-star-group"
-                          onTouchStart={(e) => handleStarTouchMove(e, item.key)}
-                          onTouchMove={(e) => handleStarTouchMove(e, item.key)}
                           onPointerDown={(e) => dismissKeyboard()}
                         >
                           {[1, 2, 3, 4, 5].map(starIndex => {

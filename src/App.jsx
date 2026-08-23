@@ -146,6 +146,12 @@ export default function App() {
     });
   };
 
+  const dismissKeyboard = () => {
+    if (document.activeElement && typeof document.activeElement.blur === 'function') {
+      document.activeElement.blur();
+    }
+  };
+
   const getEmojiForScore = (val) => {
     if (!val || val === 0) return '😶';
     if (val <= 1.5) return '😭';
@@ -959,11 +965,15 @@ export default function App() {
                 <div className="rating-section-title">
                   {feedbackFormConfig.sectionTitle || "PERFORMANCE EVALUATION (OPTIONAL)"}
                 </div>
-                <div className="ratings-sliders-container">
+                <div
+                  className="ratings-sliders-container"
+                  onPointerDown={dismissKeyboard}
+                  onTouchStart={dismissKeyboard}
+                >
                   {(feedbackFormConfig.ratingCriteria || []).map(item => {
                     const currentVal = ratings[item.key] || 0;
                     return (
-                      <div key={item.key} className="rating-slider-card">
+                      <div key={item.key} className="rating-slider-card" onPointerDown={dismissKeyboard} onTouchStart={dismissKeyboard}>
                         <div className="rating-slider-header">
                           <span className="rating-label">{item.label}</span>
                           <span className={`rating-score-pill ${currentVal > 0 ? 'active' : ''}`}>
@@ -979,7 +989,10 @@ export default function App() {
                               max="5"
                               step="0.5"
                               value={currentVal || 3}
+                              onPointerDown={dismissKeyboard}
+                              onTouchStart={dismissKeyboard}
                               onChange={(e) => {
+                                dismissKeyboard();
                                 const val = parseFloat(e.target.value);
                                 setRatings(prev => ({ ...prev, [item.key]: val }));
                               }}
@@ -991,7 +1004,15 @@ export default function App() {
                                   key={step}
                                   className={`pipe-tick ${step % 1 === 0 ? 'major' : 'minor'} ${currentVal === step ? 'active' : ''}`}
                                   style={{ left: `${((step - 1) / 4) * 100}%` }}
-                                  onClick={() => setRatings(prev => ({ ...prev, [item.key]: step }))}
+                                  onPointerDown={(e) => {
+                                    e.preventDefault();
+                                    dismissKeyboard();
+                                    setRatings(prev => ({ ...prev, [item.key]: step }));
+                                  }}
+                                  onClick={() => {
+                                    dismissKeyboard();
+                                    setRatings(prev => ({ ...prev, [item.key]: step }));
+                                  }}
                                 />
                               ))}
                             </div>
@@ -1002,7 +1023,15 @@ export default function App() {
                                 key={step}
                                 className={`tick-label-item ${step % 1 === 0 ? 'major-label' : 'minor-label'} ${currentVal === step ? 'selected' : ''}`}
                                 style={{ left: `${((step - 1) / 4) * 100}%` }}
-                                onClick={() => setRatings(prev => ({ ...prev, [item.key]: step }))}
+                                onPointerDown={(e) => {
+                                  e.preventDefault();
+                                  dismissKeyboard();
+                                  setRatings(prev => ({ ...prev, [item.key]: step }));
+                                }}
+                                onClick={() => {
+                                  dismissKeyboard();
+                                  setRatings(prev => ({ ...prev, [item.key]: step }));
+                                }}
                               >
                                 {step % 1 === 0 ? `${step}.0` : step}
                               </span>

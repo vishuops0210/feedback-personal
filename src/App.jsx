@@ -28,7 +28,8 @@ import {
   User,
   ArrowUp,
   Eye,
-  EyeOff
+  EyeOff,
+  Star
 } from 'lucide-react';
 
 export default function App() {
@@ -132,18 +133,31 @@ export default function App() {
     }, 150);
   };
 
-  const handleRatingClick = (key, val) => {
+  const handleStarClick = (key, starIndex) => {
     setRatings(prev => {
       const current = prev[key] || 0;
-      const halfVal = val - 0.5;
-      if (current === val) {
-        return { ...prev, [key]: halfVal };
-      } else if (current === halfVal) {
+      const halfVal = starIndex - 0.5;
+      const fullVal = starIndex;
+
+      if (current === halfVal) {
+        return { ...prev, [key]: fullVal };
+      } else if (current === fullVal) {
         return { ...prev, [key]: 0 };
       } else {
-        return { ...prev, [key]: val };
+        return { ...prev, [key]: halfVal };
       }
     });
+  };
+
+  const handleStarTouchMove = (e, key) => {
+    dismissKeyboard();
+    const container = e.currentTarget;
+    const rect = container.getBoundingClientRect();
+    const clientX = e.touches && e.touches.length > 0 ? e.touches[0].clientX : e.clientX;
+    const offsetX = clientX - rect.left;
+    const percentage = Math.max(0, Math.min(1, offsetX / rect.width));
+    const val = Math.max(0.5, Math.min(5.0, Math.round(percentage * 5 * 2) / 2));
+    setRatings(prev => ({ ...prev, [key]: val }));
   };
 
   const dismissKeyboard = () => {
@@ -824,8 +838,10 @@ export default function App() {
           <div className={`feedback-modal-card ${isEditorExpanded ? 'is-expanded' : ''}`} onClick={e => e.stopPropagation()}>
             <div className="feedback-modal-header">
               <div className="feedback-modal-title">
-                <MessageSquareHeart size={20} color="#ec4899" />
-                {feedbackFormConfig.headerTitle || "Reviewer Feedback & Evaluation"}
+                <span className="modal-title-icon-badge">
+                  <MessageSquareHeart size={18} />
+                </span>
+                <span>{feedbackFormConfig.headerTitle || "Reviewer Feedback & Evaluation"}</span>
               </div>
               <button
                 className="lightbox-close-btn"
@@ -961,98 +977,64 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* Performance Evaluation Rating Sliders at the bottom */}
-                <div className="rating-section-title">
-                  {feedbackFormConfig.sectionTitle || "PERFORMANCE EVALUATION (OPTIONAL)"}
+                {/* 5-Star Compact Rating Rows with Slide & Touch Support */}
+                <div className="rating-section-header">
+                  <span className="rating-section-title">
+                    {feedbackFormConfig.sectionTitle || "PERFORMANCE EVALUATION (OPTIONAL)"}
+                  </span>
+                  <span className="rating-hint-text">
+                    ✨ Tap or slide to fill stars
+                  </span>
                 </div>
-                <div
-                  className="ratings-sliders-container"
-                  onPointerDown={dismissKeyboard}
-                  onTouchStart={dismissKeyboard}
-                >
+                <div className="ratings-compact-list">
                   {(feedbackFormConfig.ratingCriteria || []).map(item => {
                     const currentVal = ratings[item.key] || 0;
                     return (
-                      <div key={item.key} className="rating-slider-card" onPointerDown={dismissKeyboard} onTouchStart={dismissKeyboard}>
-                        <div className="rating-slider-header">
+                      <div key={item.key} className="rating-compact-row">
+                        <div className="rating-row-info">
                           <span className="rating-label">{item.label}</span>
-                          <span className={`rating-score-pill ${currentVal > 0 ? 'active' : ''}`}>
-                            <span className="score-emoji">{getEmojiForScore(currentVal)}</span>
-                            <span className="score-text">{currentVal > 0 ? `${currentVal} / 5.0` : 'Not Rated'}</span>
+                          <span className={`rating-row-score ${currentVal > 0 ? 'active' : ''}`}>
+                            {currentVal > 0 ? `${currentVal} / 5.0` : 'Not Rated'}
                           </span>
                         </div>
-                        <div className="slider-input-wrapper">
-                          <div className="slider-track-container">
-                            <input
-                              type="range"
-                              min="1"
-                              max="5"
-                              step="0.5"
-                              value={currentVal || 3}
-                              onPointerDown={dismissKeyboard}
-                              onTouchStart={dismissKeyboard}
-                              onChange={(e) => {
-                                dismissKeyboard();
-                                const val = parseFloat(e.target.value);
-                                setRatings(prev => ({ ...prev, [item.key]: val }));
-                              }}
-                              className="rating-range-slider"
-                            />
-                            <div className="slider-pipe-ticks">
-                              {[1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5].map(step => (
-                                <span
-                                  key={step}
-                                  className={`pipe-tick ${step % 1 === 0 ? 'major' : 'minor'} ${currentVal === step ? 'active' : ''}`}
-                                  style={{ left: `${((step - 1) / 4) * 100}%` }}
-                                  onPointerDown={(e) => {
-                                    e.preventDefault();
-                                    dismissKeyboard();
-                                    setRatings(prev => ({ ...prev, [item.key]: step }));
-                                  }}
-                                  onClick={() => {
-                                    dismissKeyboard();
-                                    setRatings(prev => ({ ...prev, [item.key]: step }));
-                                  }}
-                                />
-                              ))}
-                            </div>
-                          </div>
-                          <div className="slider-ticks-labels">
-                            {[1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5].map(step => (
-                              <span
-                                key={step}
-                                className={`tick-label-item ${step % 1 === 0 ? 'major-label' : 'minor-label'} ${currentVal === step ? 'selected' : ''}`}
-                                style={{ left: `${((step - 1) / 4) * 100}%` }}
-                                onPointerDown={(e) => {
-                                  e.preventDefault();
-                                  dismissKeyboard();
-                                  setRatings(prev => ({ ...prev, [item.key]: step }));
-                                }}
-                                onClick={() => {
-                                  dismissKeyboard();
-                                  setRatings(prev => ({ ...prev, [item.key]: step }));
-                                }}
+                        <div
+                          className="rating-star-group"
+                          onTouchStart={(e) => handleStarTouchMove(e, item.key)}
+                          onTouchMove={(e) => handleStarTouchMove(e, item.key)}
+                          onPointerDown={(e) => dismissKeyboard()}
+                        >
+                          {[1, 2, 3, 4, 5].map(starIndex => {
+                            const isFull = currentVal >= starIndex;
+                            const isHalf = currentVal === starIndex - 0.5;
+                            return (
+                              <button
+                                key={starIndex}
+                                type="button"
+                                className={`star-btn ${isFull ? 'full' : ''} ${isHalf ? 'half' : ''}`}
+                                onClick={() => handleStarClick(item.key, starIndex)}
+                                title={`Star ${starIndex}: 1st click = ${starIndex - 0.5}, 2nd click = ${starIndex}.0`}
                               >
-                                {step % 1 === 0 ? `${step}.0` : step}
-                              </span>
-                            ))}
-                          </div>
+                                {isHalf ? (
+                                  <span className="half-star-wrapper">
+                                    <Star size={20} className="star-icon star-bg" />
+                                    <Star size={20} className="star-icon star-fg-half" />
+                                  </span>
+                                ) : (
+                                  <Star size={20} className={`star-icon ${isFull ? 'star-filled' : 'star-empty'}`} />
+                                )}
+                              </button>
+                            );
+                          })}
                         </div>
                       </div>
                     );
                   })}
                 </div>
 
-                <div className="feedback-actions">
-                  <button
-                    type="button"
-                    className="btn-action"
-                    onClick={() => setFeedbackModalOpen(false)}
-                  >
-                    Cancel
-                  </button>
-                  <button type="submit" className="btn-submit-feedback" disabled={isSubmitting}>
-                    <Send size={14} /> {isSubmitting ? (feedbackFormConfig.submittingText || 'Sending...') : (feedbackFormConfig.submitButtonText || 'Send Feedback')}
+                <div className="feedback-actions full-width-action">
+                  <button type="submit" className="btn-submit-feedback-full" disabled={isSubmitting}>
+                    <span>{isSubmitting ? (feedbackFormConfig.submittingText || 'Submitting...') : (feedbackFormConfig.submitButtonText || 'Submit Evaluation')}</span>
+                    <Send size={16} />
                   </button>
                 </div>
               </form>

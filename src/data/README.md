@@ -1,37 +1,23 @@
-# 📊 Data Configuration & Text Formatting Reference Guide
+# 📊 Data Configuration & Markdown Reports Guide
 
-This folder (`src/data/`) contains all the customizable JSON datasets powering the Quarterly Performance Report Dashboard.
-
----
-
-## 🎨 Text Formatting Symbols Guide
-
-You can use the following formatting symbols anywhere inside string values in `quarterlyReports.json`, `monthlyReports.json`, or `feedbackFormConfig.json`:
-
-| Style Type | Symbol Syntax in JSON | Visual Output / Rendered Style |
-| :--- | :--- | :--- |
-| **Code Pill Tag** | `{Outline}` | Gray/White Code Tag (`Outline`) |
-| **Blue Highlight** | `[blue:ArgoCD]` | 🟦 Soft Blue Shaded Tag |
-| **Green Highlight** | `[green:Done]` | 🟩 Soft Green Shaded Tag |
-| **Purple Highlight** | `[purple:LiteLLM]` | 🟪 Soft Purple Shaded Tag |
-| **Orange Highlight** | `[orange:In-Progress]` | 🟧 Soft Orange Shaded Tag |
-| **Red Highlight** | `[red:Urgent]` | 🟥 Soft Red Shaded Tag |
-| **Bold Text** | `**1 configuration file**` | **Bold Text** |
-| **Italic Text** | `*Important Note*` | *Italic Text* |
+This folder (`src/data/`) contains all the Markdown reports and customizable configuration files powering the Quarterly Performance Dashboard.
 
 ---
 
 ## 📂 File Structure Overview
 
-### 1. `quarterlyReports.json`
-Manages all quarterly project deliverables, section badges, bullet lists, sub-sections, and key learnings matrix for **Q1, Q2, Q3, and Q4**.
+### 1. `reports/` (`q1.md`, `q2.md`, `q3.md`, `q4.md`)
+Human-friendly Markdown files for quarterly deliverables, section badges, bullet lists, sub-sections, and key learnings.
 
-**Example:**
-```json
-{
-  "type": "text",
-  "text": "Created a POC for {Liquibase} with [blue:ArgoCD], [green:Done] and **1 configuration file**."
-}
+**Example Markdown Format (`q1.md`):**
+```markdown
+# Q1 Quarterly Performance Report
+*Period: June, July & August 2026*
+
+## Section Title `Done`
+- Standard deliverable bullet item
+  - Sub-deliverable 1 with `code` tag and **bold** text
+  - Sub-deliverable 2 with links [Docs](https://...) and [Architecture](https://...)
 ```
 
 ---
@@ -44,9 +30,14 @@ Manages all monthly slide data, image paths (`src`), titles, descriptions, and c
 ### 3. `feedbackFormConfig.json`
 Manages feedback modal strings, placeholders, dropdown options, rating emojis, evaluation criteria parameters, and the **Footer Note**.
 
-**Footer Note Customization:**
-```json
-{
-  "footerNote": "**Note:** This report focuses on major outcomes and completed deliverables. Daily troubleshooting, brainstorming sessions, and internal discussion notes are omitted here."
-}
-```
+---
+
+## 🎨 Text Formatting Guide for `.md` Files
+
+| Style Type | Markdown Syntax | Rendered Output |
+| :--- | :--- | :--- |
+| **Inline Link** | `[Link Title](https://...)` | Clickable Pill Button with External Link Icon |
+| **Tech Tag** | `\`Outline\`` or `{Outline}` | Gray/White Tech Code Pill Tag |
+| **Bold Text** | `**1 configuration file**` | **Bold Text** |
+| **Italic Text** | `*Important Note*` | *Italic Text* |
+| **Status Badge** | `## Title \`Done\`` | Section Card with Status Badge Pill on Right |

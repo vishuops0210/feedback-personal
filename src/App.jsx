@@ -372,18 +372,36 @@ export default function App() {
 
   const renderFormattedText = (text) => {
     if (!text) return null;
-    const tokens = text.split(/(\{.*?\}|\[[a-z]+:.*?\]|\*\*.*?\*\*|\*.*?\*)/g);
+    const tokens = text.split(/(\[[^\]]+\]\([^)]+\)|\{.*?\}|`.*?`|\[[a-z]+:.*?\]|\*\*.*?\*\*|\*.*?\*)/g);
 
     return tokens.map((token, i) => {
       if (!token) return null;
 
-      // 1. Tech Code Pill Tag: {Text}
-      if (token.startsWith('{') && token.endsWith('}')) {
+      // 1. Standard Markdown Link: [Link Title](https://...)
+      const linkMatch = token.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
+      if (linkMatch) {
+        const [, linkText, linkUrl] = linkMatch;
+        return (
+          <a
+            key={i}
+            href={linkUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-link-button"
+          >
+            <span>{linkText}</span>
+            <ExternalLink size={12} />
+          </a>
+        );
+      }
+
+      // 2. Tech Code Pill Tag: {Text} or `Text`
+      if ((token.startsWith('{') && token.endsWith('}')) || (token.startsWith('`') && token.endsWith('`'))) {
         return <span key={i} className="tech-tag">{token.slice(1, -1)}</span>;
       }
 
-      // 2. Color Shaded Highlight Tag: [blue:Text], [green:Text], [purple:Text], [orange:Text], [red:Text]
-      if (token.startsWith('[') && token.endsWith(']')) {
+      // 3. Color Shaded Highlight Tag: [blue:Text], [green:Text], [purple:Text], [orange:Text], [red:Text]
+      if (token.startsWith('[') && token.endsWith(']') && token.includes(':')) {
         const inner = token.slice(1, -1);
         const colonIdx = inner.indexOf(':');
         if (colonIdx !== -1) {
@@ -393,12 +411,12 @@ export default function App() {
         }
       }
 
-      // 3. Bold Text: **Text**
+      // 4. Bold Text: **Text**
       if (token.startsWith('**') && token.endsWith('**')) {
         return <strong key={i}>{token.slice(2, -2)}</strong>;
       }
 
-      // 4. Italic Text: *Text*
+      // 5. Italic Text: *Text*
       if (token.startsWith('*') && token.endsWith('*')) {
         return <em key={i}>{token.slice(1, -1)}</em>;
       }

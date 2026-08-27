@@ -56,10 +56,24 @@ export default function App() {
   const [isUl, setIsUl] = useState(false);
   const [isOl, setIsOl] = useState(false);
 
-  // Clear modal inputs & reset quarter to unselected when modal opens
+  // Auto-open feedback modal if URL contains ?feedback=true, ?feedback=Q1, or #feedback
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const feedbackParam = urlParams.get('feedback');
+    const hash = window.location.hash;
+
+    if (feedbackParam !== null || hash === '#feedback' || hash === '#share-feedback') {
+      setFeedbackModalOpen(true);
+      if (feedbackParam && ['Q1', 'Q2', 'Q3', 'Q4'].includes(feedbackParam.toUpperCase())) {
+        setSelectedQuarterForFeedback(feedbackParam.toUpperCase());
+        setActiveQuarter(feedbackParam.toUpperCase());
+      }
+    }
+  }, []);
+
+  // Clear modal text input when modal opens
   useEffect(() => {
     if (feedbackModalOpen) {
-      setSelectedQuarterForFeedback(''); // Starts empty/unselected!
       setFeedbackText('');
       if (editorRef.current) {
         editorRef.current.innerHTML = '';

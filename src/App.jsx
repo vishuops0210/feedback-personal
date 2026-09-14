@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './styles/main.css';
-import { quarterlyReports, monthlyReports, feedbackFormConfig } from './data/reportData';
+import { quarterlyReports, monthlyReports, weeklyReports, feedbackFormConfig } from './data/reportData';
 import {
   Sun,
   Moon,
@@ -34,9 +34,10 @@ import {
 
 export default function App() {
   const [theme, setTheme] = useState('light');
-  const [viewMode, setViewMode] = useState('quarterly'); // 'quarterly' | 'monthly'
+  const [viewMode, setViewMode] = useState('quarterly'); // 'quarterly' | 'monthly' | 'weekly'
   const [activeQuarter, setActiveQuarter] = useState('Q1');
   const [activeMonthId, setActiveMonthId] = useState('june-2026');
+  const [activeWeekId, setActiveWeekId] = useState('june-2026-w1');
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
@@ -384,6 +385,25 @@ export default function App() {
     }
   };
 
+  const currentWeekIndex = weeklyReports.findIndex(w => w.id === activeWeekId);
+  const currentWeekData = weeklyReports[currentWeekIndex] || weeklyReports[0];
+  const currentWeekSlide = currentWeekData.slides[activeSlideIndex] || currentWeekData.slides[0];
+  const displaySlide = viewMode === 'weekly' ? currentWeekSlide : currentSlide;
+
+  const handlePrevWeek = () => {
+    if (currentWeekIndex > 0) {
+      setActiveWeekId(weeklyReports[currentWeekIndex - 1].id);
+      setActiveSlideIndex(0);
+    }
+  };
+
+  const handleNextWeek = () => {
+    if (currentWeekIndex < weeklyReports.length - 1) {
+      setActiveWeekId(weeklyReports[currentWeekIndex + 1].id);
+      setActiveSlideIndex(0);
+    }
+  };
+
   const renderFormattedText = (text) => {
     if (!text) return null;
     const tokens = text.split(/(\[[^\]]+\]\([^)]+\)|\{.*?\}|`.*?`|\[[a-z]+:.*?\]|\*\*.*?\*\*|\*.*?\*)/g);
@@ -507,7 +527,11 @@ export default function App() {
       <nav ref={navRef} className={`top-navbar ${scrolled ? 'scrolled' : ''} ${isHeaderCollapsed ? 'is-collapsed' : ''}`}>
         {isHeaderCollapsed ? (
           <div className="mini-nav-container">
-            <div className="mini-brand-title">Quarterly Report ({activeQuarter})</div>
+            <div className="mini-brand-title">
+              {viewMode === 'quarterly' ? `Quarterly Report (${activeQuarter})`
+                : viewMode === 'monthly' ? `Monthly Slides (${currentMonthData.month})`
+                : `Weekly Slides (${currentWeekData.week})`}
+            </div>
             <div className="mini-nav-actions">
               {viewMode === 'quarterly' && currentQuarterData.sections.length > 0 && (
                 <button className="btn-action-icon" onClick={toggleAllSections} title="Expand / Collapse All Cards">
@@ -535,11 +559,11 @@ export default function App() {
             <div>
               <div className="brand-title">Quarterly Performance Report</div>
               <div className="brand-period">
-                {viewMode === 'quarterly' ? `Quarterly View (${activeQuarter})` : `Monthly Slides (${currentMonthData.month})`}
+                {viewMode === 'quarterly' ? `Quarterly View (${activeQuarter})` : viewMode === 'monthly' ? `Monthly Slides (${currentMonthData.month})` : `Weekly Slides (${currentWeekData.week})`}
               </div>
             </div>
 
-            {/* View Mode Switcher: Quarterly vs Monthly */}
+            {/* View Mode Switcher: Quarterly vs Monthly vs Weekly */}
             <div className="view-switcher-bar">
               <button
                 className={`view-btn ${viewMode === 'quarterly' ? 'active' : ''}`}
@@ -554,6 +578,13 @@ export default function App() {
               >
                 <ImageIcon size={14} />
                 <span>Monthly Slides</span>
+              </button>
+              <button
+                className={`view-btn ${viewMode === 'weekly' ? 'active' : ''}`}
+                onClick={() => setViewMode('weekly')}
+              >
+                <Calendar size={14} />
+                <span>Weekly Slides</span>
               </button>
             </div>
 
@@ -738,7 +769,7 @@ export default function App() {
               </div>
             )}
           </>
-        ) : (
+        ) : viewMode === 'monthly' ? (
           /* Monthly Slide / Image View */
           <div className="monthly-view-container">
             {/* Executive Month Selection Dropdown & Prev/Next Bar */}
@@ -827,6 +858,136 @@ export default function App() {
                   <div className="empty-slide-placeholder">
                     <ImageIcon size={36} color="var(--accent-primary)" style={{ opacity: 0.6 }} />
                     <span>No image provided for {currentMonthData.month} yet</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        ) : (
+          /* Weekly Slide / Image View */
+          <div className="weekly-view-container">
+            {/* Executive Week Selection Dropdown & Prev/Next Bar */}
+            <div className={`weekly-control-bar ${isHeaderCollapsed ? 'is-collapsed' : ''}`}>
+              <div className="month-select-wrapper">
+                <Calendar size={16} className="select-icon" />
+                <select
+                  className="month-dropdown"
+                  value={activeWeekId}
+                  onChange={(e) => {
+                    setActiveWeekId(e.target.value);
+                    setActiveSlideIndex(0);
+                  }}
+                >
+                  <optgroup label="Q1 (June - August 2026)">
+                    <option value="june-2026-w1">June 2026 - Week 1</option>
+                    <option value="june-2026-w2">June 2026 - Week 2</option>
+                    <option value="june-2026-w3">June 2026 - Week 3</option>
+                    <option value="june-2026-w4">June 2026 - Week 4</option>
+                    <option value="july-2026-w1">July 2026 - Week 1</option>
+                    <option value="july-2026-w2">July 2026 - Week 2</option>
+                    <option value="july-2026-w3">July 2026 - Week 3</option>
+                    <option value="july-2026-w4">July 2026 - Week 4</option>
+                    <option value="august-2026-w1">August 2026 - Week 1</option>
+                    <option value="august-2026-w2">August 2026 - Week 2</option>
+                    <option value="august-2026-w3">August 2026 - Week 3</option>
+                    <option value="august-2026-w4">August 2026 - Week 4</option>
+                  </optgroup>
+                  <optgroup label="Q2 (September - November 2026)">
+                    <option value="september-2026-w1">September 2026 - Week 1</option>
+                    <option value="september-2026-w2">September 2026 - Week 2</option>
+                    <option value="september-2026-w3">September 2026 - Week 3</option>
+                    <option value="september-2026-w4">September 2026 - Week 4</option>
+                    <option value="october-2026-w1">October 2026 - Week 1</option>
+                    <option value="october-2026-w2">October 2026 - Week 2</option>
+                    <option value="october-2026-w3">October 2026 - Week 3</option>
+                    <option value="october-2026-w4">October 2026 - Week 4</option>
+                    <option value="november-2026-w1">November 2026 - Week 1</option>
+                    <option value="november-2026-w2">November 2026 - Week 2</option>
+                    <option value="november-2026-w3">November 2026 - Week 3</option>
+                    <option value="november-2026-w4">November 2026 - Week 4</option>
+                  </optgroup>
+                  <optgroup label="Q3 (December 2026 - February 2027)">
+                    <option value="december-2026-w1">December 2026 - Week 1</option>
+                    <option value="december-2026-w2">December 2026 - Week 2</option>
+                    <option value="december-2026-w3">December 2026 - Week 3</option>
+                    <option value="december-2026-w4">December 2026 - Week 4</option>
+                    <option value="january-2027-w1">January 2027 - Week 1</option>
+                    <option value="january-2027-w2">January 2027 - Week 2</option>
+                    <option value="january-2027-w3">January 2027 - Week 3</option>
+                    <option value="january-2027-w4">January 2027 - Week 4</option>
+                    <option value="february-2027-w1">February 2027 - Week 1</option>
+                    <option value="february-2027-w2">February 2027 - Week 2</option>
+                    <option value="february-2027-w3">February 2027 - Week 3</option>
+                    <option value="february-2027-w4">February 2027 - Week 4</option>
+                  </optgroup>
+                  <optgroup label="Q4 (March - May 2027)">
+                    <option value="march-2027-w1">March 2027 - Week 1</option>
+                    <option value="march-2027-w2">March 2027 - Week 2</option>
+                    <option value="march-2027-w3">March 2027 - Week 3</option>
+                    <option value="march-2027-w4">March 2027 - Week 4</option>
+                    <option value="april-2027-w1">April 2027 - Week 1</option>
+                    <option value="april-2027-w2">April 2027 - Week 2</option>
+                    <option value="april-2027-w3">April 2027 - Week 3</option>
+                    <option value="april-2027-w4">April 2027 - Week 4</option>
+                    <option value="may-2027-w1">May 2027 - Week 1</option>
+                    <option value="may-2027-w2">May 2027 - Week 2</option>
+                    <option value="may-2027-w3">May 2027 - Week 3</option>
+                    <option value="may-2027-w4">May 2027 - Week 4</option>
+                  </optgroup>
+                </select>
+                <ChevronDown size={16} className="select-arrow" />
+              </div>
+
+              <div className="month-nav-buttons">
+                <button
+                  className="btn-month-nav"
+                  onClick={handlePrevWeek}
+                  disabled={currentWeekIndex === 0}
+                  title="Previous Week"
+                >
+                  <ChevronLeft size={16} /> Prev Week
+                </button>
+                <button
+                  className="btn-month-nav"
+                  onClick={handleNextWeek}
+                  disabled={currentWeekIndex === weeklyReports.length - 1}
+                  title="Next Week"
+                >
+                  Next Week <ChevronRight size={16} />
+                </button>
+              </div>
+            </div>
+
+            {/* Weekly Image Showcase Card */}
+            <div className="weekly-showcase-card">
+              <div className="showcase-header">
+                <div className="showcase-title">{currentWeekData.week} Slide</div>
+                {currentWeekData.description && (
+                  <div className="showcase-subtitle">{currentWeekData.description}</div>
+                )}
+              </div>
+
+              {/* Slide Frame */}
+              <div className="slide-viewport" onClick={() => currentWeekSlide.src && setLightboxOpen(true)}>
+                {currentWeekSlide.src ? (
+                  <>
+                    <img
+                      src={currentWeekSlide.src}
+                      alt={currentWeekSlide.title}
+                      className="slide-image"
+                    />
+                    <div className="slide-overlay-caption">
+                      {currentWeekSlide.caption && <span className="slide-caption-text">{currentWeekSlide.caption}</span>}
+                      <button className="slide-zoom-btn">
+                        <Maximize2 size={13} style={{ display: 'inline', marginRight: 4 }} />
+                        Full Screen
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <div className="empty-slide-placeholder">
+                    <ImageIcon size={36} color="var(--accent-primary)" style={{ opacity: 0.6 }} />
+                    <span>No image provided for {currentWeekData.week} yet</span>
                   </div>
                 )}
               </div>
@@ -1059,17 +1220,17 @@ export default function App() {
       )}
 
       {/* Lightbox Modal for Full Screen Image Viewing */}
-      {lightboxOpen && currentSlide.src && (
+      {lightboxOpen && displaySlide.src && (
         <div className="lightbox-backdrop" onClick={() => setLightboxOpen(false)}>
           <div className="lightbox-content" onClick={e => e.stopPropagation()}>
             <div className="lightbox-header">
-              <span style={{ fontWeight: 700, fontSize: '0.95rem' }}>{currentSlide.title}</span>
+              <span style={{ fontWeight: 700, fontSize: '0.95rem' }}>{displaySlide.title}</span>
               <button className="lightbox-close-btn" onClick={() => setLightboxOpen(false)}>
                 <X size={16} /> Close
               </button>
             </div>
             <div className="lightbox-image-container">
-              <img src={currentSlide.src} alt={currentSlide.title} className="lightbox-image" />
+              <img src={displaySlide.src} alt={displaySlide.title} className="lightbox-image" />
             </div>
           </div>
         </div>

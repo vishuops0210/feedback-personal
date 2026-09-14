@@ -6,6 +6,7 @@ import q4Md from './reports/q4.md?raw';
 
 import { parseMarkdownReport } from './reportParser';
 import monthlyReports from './monthlyReports.json';
+import weeklyReports from './weeklyReports.json';
 import feedbackFormConfig from './feedbackFormConfig.json';
 
 const quarterlyReports = {
@@ -15,4 +16,4 @@ const quarterlyReports = {
   Q4: parseMarkdownReport(q4Md)
 };
 
-export { quarterlyReports, monthlyReports, feedbackFormConfig };
+export { quarterlyReports, monthlyReports, weeklyReports, feedbackFormConfig };

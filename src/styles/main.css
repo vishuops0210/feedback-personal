@@ -401,9 +401,10 @@ html, body {
   z-index: 1;
 }
 
-/* Sticky Quarter Tabs & Monthly Control Bar */
+/* Sticky Quarter Tabs & Monthly/Weekly Control Bar */
 .quarter-selector-bar,
-.monthly-control-bar {
+.monthly-control-bar,
+.weekly-control-bar {
   position: -webkit-sticky;
   position: sticky;
   top: var(--nav-h, 77px);
@@ -497,7 +498,8 @@ html, body {
 }
 
 .quarter-selector-bar.is-collapsed,
-.monthly-control-bar.is-collapsed {
+.monthly-control-bar.is-collapsed,
+.weekly-control-bar.is-collapsed {
   display: none !important;
 }
 
@@ -594,8 +596,9 @@ html, body {
   opacity: 0.95;
 }
 
-/* Monthly Control Bar (Sleek Dropdown + Prev/Next Buttons) */
-.monthly-control-bar {
+/* Monthly & Weekly Control Bar (Sleek Dropdown + Prev/Next Buttons) */
+.monthly-control-bar,
+.weekly-control-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -682,8 +685,9 @@ html, body {
   cursor: not-allowed;
 }
 
-/* Monthly Slide Showcase Container */
-.monthly-showcase-card {
+/* Monthly & Weekly Slide Showcase Container */
+.monthly-showcase-card,
+.weekly-showcase-card {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: 12px;
@@ -2035,7 +2039,7 @@ html, body {
     padding: 0 !important;
   }
 
-  .top-navbar, .chevron-icon, .quarter-selector-bar, .monthly-control-bar, .btn-feedback-gradient, .ambient-bg-container {
+  .top-navbar, .chevron-icon, .quarter-selector-bar, .monthly-control-bar, .weekly-control-bar, .btn-feedback-gradient, .ambient-bg-container {
     display: none !important;
   }
 
@@ -2076,7 +2080,7 @@ html, body {
     color: #000000 !important;
   }
 
-  .future-plans-card, .monthly-showcase-card {
+  .future-plans-card, .monthly-showcase-card, .weekly-showcase-card {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
     border: 1px solid #cbd5e1 !important;

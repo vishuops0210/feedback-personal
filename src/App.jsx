@@ -40,6 +40,11 @@ export default function App() {
   const [activeWeekId, setActiveWeekId] = useState('june-2026-w1');
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [failedImages, setFailedImages] = useState(() => new Set());
+
+  const handleImageError = (src) => {
+    setFailedImages(prev => new Set(prev).add(src));
+  };
 
   // Feedback Modal State - Quarter starts empty/unselected so user MUST select one!
   const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
@@ -791,18 +796,6 @@ export default function App() {
                   </optgroup>
                   <optgroup label="Q2 (September - November 2026)">
                     <option value="september-2026">September 2026</option>
-                    <option value="october-2026">October 2026</option>
-                    <option value="november-2026">November 2026</option>
-                  </optgroup>
-                  <optgroup label="Q3 (December 2026 - February 2027)">
-                    <option value="december-2026">December 2026</option>
-                    <option value="january-2027">January 2027</option>
-                    <option value="february-2027">February 2027</option>
-                  </optgroup>
-                  <optgroup label="Q4 (March - May 2027)">
-                    <option value="march-2027">March 2027</option>
-                    <option value="april-2027">April 2027</option>
-                    <option value="may-2027">May 2027</option>
                   </optgroup>
                 </select>
                 <ChevronDown size={16} className="select-arrow" />
@@ -838,16 +831,17 @@ export default function App() {
               </div>
 
               {/* Slide Frame */}
-              <div className="slide-viewport" onClick={() => currentSlide.src && setLightboxOpen(true)}>
-                {currentSlide.src ? (
+              <div className="slide-viewport" onClick={() => displaySlide.src && !failedImages.has(displaySlide.src) && setLightboxOpen(true)}>
+                {displaySlide.src && !failedImages.has(displaySlide.src) ? (
                   <>
                     <img
-                      src={currentSlide.src}
-                      alt={currentSlide.title}
+                      src={displaySlide.src}
+                      alt={displaySlide.title}
                       className="slide-image"
+                      onError={() => handleImageError(displaySlide.src)}
                     />
                     <div className="slide-overlay-caption">
-                      {currentSlide.caption && <span className="slide-caption-text">{currentSlide.caption}</span>}
+                      {displaySlide.caption && <span className="slide-caption-text">{displaySlide.caption}</span>}
                       <button className="slide-zoom-btn">
                         <Maximize2 size={13} style={{ display: 'inline', marginRight: 4 }} />
                         Full Screen
@@ -895,44 +889,6 @@ export default function App() {
                   <optgroup label="Q2 (September - November 2026)">
                     <option value="september-2026-w1">September 2026 - Week 1</option>
                     <option value="september-2026-w2">September 2026 - Week 2</option>
-                    <option value="september-2026-w3">September 2026 - Week 3</option>
-                    <option value="september-2026-w4">September 2026 - Week 4</option>
-                    <option value="october-2026-w1">October 2026 - Week 1</option>
-                    <option value="october-2026-w2">October 2026 - Week 2</option>
-                    <option value="october-2026-w3">October 2026 - Week 3</option>
-                    <option value="october-2026-w4">October 2026 - Week 4</option>
-                    <option value="november-2026-w1">November 2026 - Week 1</option>
-                    <option value="november-2026-w2">November 2026 - Week 2</option>
-                    <option value="november-2026-w3">November 2026 - Week 3</option>
-                    <option value="november-2026-w4">November 2026 - Week 4</option>
-                  </optgroup>
-                  <optgroup label="Q3 (December 2026 - February 2027)">
-                    <option value="december-2026-w1">December 2026 - Week 1</option>
-                    <option value="december-2026-w2">December 2026 - Week 2</option>
-                    <option value="december-2026-w3">December 2026 - Week 3</option>
-                    <option value="december-2026-w4">December 2026 - Week 4</option>
-                    <option value="january-2027-w1">January 2027 - Week 1</option>
-                    <option value="january-2027-w2">January 2027 - Week 2</option>
-                    <option value="january-2027-w3">January 2027 - Week 3</option>
-                    <option value="january-2027-w4">January 2027 - Week 4</option>
-                    <option value="february-2027-w1">February 2027 - Week 1</option>
-                    <option value="february-2027-w2">February 2027 - Week 2</option>
-                    <option value="february-2027-w3">February 2027 - Week 3</option>
-                    <option value="february-2027-w4">February 2027 - Week 4</option>
-                  </optgroup>
-                  <optgroup label="Q4 (March - May 2027)">
-                    <option value="march-2027-w1">March 2027 - Week 1</option>
-                    <option value="march-2027-w2">March 2027 - Week 2</option>
-                    <option value="march-2027-w3">March 2027 - Week 3</option>
-                    <option value="march-2027-w4">March 2027 - Week 4</option>
-                    <option value="april-2027-w1">April 2027 - Week 1</option>
-                    <option value="april-2027-w2">April 2027 - Week 2</option>
-                    <option value="april-2027-w3">April 2027 - Week 3</option>
-                    <option value="april-2027-w4">April 2027 - Week 4</option>
-                    <option value="may-2027-w1">May 2027 - Week 1</option>
-                    <option value="may-2027-w2">May 2027 - Week 2</option>
-                    <option value="may-2027-w3">May 2027 - Week 3</option>
-                    <option value="may-2027-w4">May 2027 - Week 4</option>
                   </optgroup>
                 </select>
                 <ChevronDown size={16} className="select-arrow" />
@@ -968,16 +924,17 @@ export default function App() {
               </div>
 
               {/* Slide Frame */}
-              <div className="slide-viewport" onClick={() => currentWeekSlide.src && setLightboxOpen(true)}>
-                {currentWeekSlide.src ? (
+              <div className="slide-viewport" onClick={() => displaySlide.src && !failedImages.has(displaySlide.src) && setLightboxOpen(true)}>
+                {displaySlide.src && !failedImages.has(displaySlide.src) ? (
                   <>
                     <img
-                      src={currentWeekSlide.src}
-                      alt={currentWeekSlide.title}
+                      src={displaySlide.src}
+                      alt={displaySlide.title}
                       className="slide-image"
+                      onError={() => handleImageError(displaySlide.src)}
                     />
                     <div className="slide-overlay-caption">
-                      {currentWeekSlide.caption && <span className="slide-caption-text">{currentWeekSlide.caption}</span>}
+                      {displaySlide.caption && <span className="slide-caption-text">{displaySlide.caption}</span>}
                       <button className="slide-zoom-btn">
                         <Maximize2 size={13} style={{ display: 'inline', marginRight: 4 }} />
                         Full Screen

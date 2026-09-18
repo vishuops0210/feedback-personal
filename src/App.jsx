@@ -889,6 +889,7 @@ export default function App() {
                   <optgroup label="Q2 (September - November 2026)">
                     <option value="september-2026-w1">September 2026 - Week 1</option>
                     <option value="september-2026-w2">September 2026 - Week 2</option>
+                    <option value="september-2026-w3">September 2026 - Week 3</option>
                   </optgroup>
                 </select>
                 <ChevronDown size={16} className="select-arrow" />

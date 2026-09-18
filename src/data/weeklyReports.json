@@ -208,5 +208,20 @@
         "caption": ""
       }
     ]
+  },
+  {
+    "id": "september-2026-w3",
+    "week": "September 2026 - Week 3",
+    "month": "September 2026",
+    "quarter": "Q2",
+    "description": "",
+    "slides": [
+      {
+        "id": 1,
+        "title": "September 2026 Week 3 Slide",
+        "src": "/images/weekly/september-2026-w3.png",
+        "caption": ""
+      }
+    ]
   }
 ]

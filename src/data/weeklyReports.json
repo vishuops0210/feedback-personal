@@ -223,5 +223,20 @@
         "caption": ""
       }
     ]
+  },
+  {
+    "id": "september-2026-w4",
+    "week": "September 2026 - Week 4",
+    "month": "September 2026",
+    "quarter": "Q2",
+    "description": "",
+    "slides": [
+      {
+        "id": 1,
+        "title": "September 2026 Week 4 Slide",
+        "src": "/images/weekly/september-2026-w4.png",
+        "caption": ""
+      }
+    ]
   }
 ]
